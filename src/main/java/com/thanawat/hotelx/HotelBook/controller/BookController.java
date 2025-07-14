@@ -5,10 +5,7 @@ import com.thanawat.hotelx.HotelBook.exception.PrimaryKeyExistInCreateRequest;
 import com.thanawat.hotelx.HotelBook.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books")
@@ -16,6 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     private final BookService bookService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getReservationById(@PathVariable Long id) {
+        return bookService.getReservationById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @PostMapping
     public ResponseEntity<Book> makeReservation(@RequestBody Book book) throws PrimaryKeyExistInCreateRequest {

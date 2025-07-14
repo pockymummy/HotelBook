@@ -21,4 +21,8 @@ public class BookService {
             return bookRepository.save(book);
         }
     }
+
+    public Optional<Book> getReservationById(Long bookId) {
+        return bookRepository.findById(bookId);
+    }
 }

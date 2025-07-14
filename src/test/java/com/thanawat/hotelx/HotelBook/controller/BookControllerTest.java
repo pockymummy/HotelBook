@@ -8,7 +8,6 @@ import com.thanawat.hotelx.HotelBook.service.BookService;
 import com.thanawat.hotelx.HotelBook.util.DateConfiguredObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -19,11 +18,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
@@ -91,5 +89,26 @@ public class BookControllerTest {
                     assertEquals(PrimaryKeyExistInCreateRequest.class.getName(), result.getResponse().getContentAsString());
                 });
     }
+
+    @Test
+    void givenExistingBooking_whenGetReservationById_returnBooking() throws Exception {
+        when(bookService.getReservationById(savedReservation.getBookingId())).thenReturn(Optional.of(savedReservation));
+
+        mockMvc.perform(get("/books/" + savedReservation.getBookingId()))
+                .andExpect(status().isOk())
+                .andExpect(result -> {
+                    Book actual = objectMapper.readValue(result.getResponse().getContentAsString(), Book.class);
+                    assertEquals(savedReservation.getBookingId(), actual.getBookingId());
+                    assertEquals(savedReservation.getHotelId(), actual.getHotelId());
+                });
+    }
+
+    @Test
+    void givenNonExistingBooking_whenGetReservationById_returnNotFound() throws Exception {
+        when(bookService.getReservationById(savedReservation.getBookingId())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/books/" + savedReservation.getBookingId()))
+                .andExpect(status().isNotFound());
+        }
 }
 

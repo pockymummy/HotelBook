@@ -11,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +66,30 @@ public class BookServiceTest {
     @Test
     void givenBookingWithId_whenMakeReservation_returnEmpty() {
         assertThrows(PrimaryKeyExistInCreateRequest.class, () -> bookService.makeReservation(bookWithId));
+    }
+
+    @Test
+    void givenExistingBook_whenGetReservationById_returnBooking() {
+        when(bookRepository.findById(bookWithId.getBookingId())).thenReturn(Optional.of(bookWithId));
+
+        Optional<Book> actual = bookService.getReservationById(bookWithId.getBookingId());
+
+        assertTrue(actual.isPresent());
+        assertEquals(bookWithId.getBookingId(), actual.get().getBookingId());
+        assertEquals(bookWithId.getRoomId(), actual.get().getRoomId());
+        assertEquals(bookWithId.getPeopleNum(), actual.get().getPeopleNum());
+        assertEquals(bookWithId.getCheckOutDate(),actual.get().getCheckOutDate());
+        assertEquals(bookWithId.getCheckInDate(), actual.get().getCheckInDate());
+        assertEquals(bookWithId.getHotelId(), actual.get().getHotelId());
+    }
+
+    @Test
+    void givenNonExistingBook_whenGetReservationById_returnEmpty() {
+        when(bookRepository.findById(any())).thenReturn(Optional.empty());
+
+        Optional<Book> actual = bookService.getReservationById(bookWithId.getBookingId());
+
+        assertFalse(actual.isPresent());
     }
     
 }
