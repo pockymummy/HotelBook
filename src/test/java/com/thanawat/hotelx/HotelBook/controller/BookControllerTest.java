@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thanawat.hotelx.HotelBook.data.Book;
 import com.thanawat.hotelx.HotelBook.exception.PrimaryKeyExistInCreateRequest;
 import com.thanawat.hotelx.HotelBook.service.BookService;
-import com.thanawat.hotelx.HotelBook.util.DateConfiguredObjectMapper;
+import util.DateConfiguredObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
