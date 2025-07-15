@@ -3,7 +3,9 @@ package integrationtest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thanawat.hotelx.HotelBook.HotelBookApplication;
 import com.thanawat.hotelx.HotelBook.data.Book;
+import com.thanawat.hotelx.HotelBook.data.Hotel;
 import com.thanawat.hotelx.HotelBook.repository.BookRepository;
+import com.thanawat.hotelx.HotelBook.repository.HotelRepository;
 import integrationtest.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,14 +30,21 @@ public class BookControllerTest extends AbstractIntegrationTest {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private HotelRepository hotelRepository;
+
     private final ObjectMapper objectMapper = DateConfiguredObjectMapper.getDateConfiguredObjectMapper();
 
     @BeforeEach
-    void clearData()  { bookRepository.deleteAll();}
+    void clearData()  { bookRepository.deleteAll();
+        hotelRepository.deleteAll();
+        hotelRepository.save(Hotel.builder().id(1L).name("a").build());
+        hotelRepository.save(Hotel.builder().id(2L).name("b").build());
+    }
 
     @Test
     void givenExistedBooking_whenGetBooking_returnBooking() throws Exception{
-        Book existingBook = Book.builder().hotelId(1L).build();
+        Book existingBook = Book.builder().hotel(Hotel.builder().id(1L).build()).build();
         Book savedBook = bookRepository.save(existingBook);
 
         mockMvc.perform(get("/books/" + savedBook.getBookingId()))
@@ -43,7 +52,7 @@ public class BookControllerTest extends AbstractIntegrationTest {
                 .andExpect(result -> {
                     Book actual = objectMapper.readValue(result.getResponse().getContentAsString(), Book.class);
                     assertEquals(savedBook.getBookingId(), actual.getBookingId());
-                    assertEquals(savedBook.getHotelId(), actual.getHotelId());
+                    assertEquals(savedBook.getHotel().getId(), actual.getHotel().getId());
                 });
     }
 
@@ -55,7 +64,7 @@ public class BookControllerTest extends AbstractIntegrationTest {
 
     @Test
     void givenBooking_whenCreateReservation_returnBooking() throws Exception{
-        Book booking = Book.builder().hotelId(1L).build();
+        Book booking = Book.builder().hotel(Hotel.builder().id(1L).build()).build();
 
         mockMvc.perform(post("/books")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +73,7 @@ public class BookControllerTest extends AbstractIntegrationTest {
                 .andExpect(result -> {
                     Book actual = objectMapper.readValue(result.getResponse().getContentAsString(), Book.class);
                     assertNotNull(actual.getBookingId());
-                    assertEquals(booking.getHotelId(), actual.getHotelId());
+                    assertEquals(booking.getHotel().getId(), actual.getHotel().getId());
                 });
     }
 }

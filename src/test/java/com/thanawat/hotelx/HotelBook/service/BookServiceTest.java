@@ -1,6 +1,7 @@
 package com.thanawat.hotelx.HotelBook.service;
 
 import com.thanawat.hotelx.HotelBook.data.Book;
+import com.thanawat.hotelx.HotelBook.data.Hotel;
 import com.thanawat.hotelx.HotelBook.exception.PrimaryKeyExistInCreateRequest;
 import com.thanawat.hotelx.HotelBook.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,14 +34,14 @@ public class BookServiceTest {
     void setup() {
         bookWithId = Book.builder()
                 .bookingId(1L)
-                .hotelId(1L)
+                .hotel(Hotel.builder().id(1L).build())
                 .checkInDate(LocalDate.of(2024,11,05))
                 .checkOutDate(LocalDate.of(2024,11,07))
                 .peopleNum(2)
                 .roomId(1L)
                 .build();
         defaultBook = Book.builder()
-                .hotelId(1L)
+                .hotel(Hotel.builder().id(1L).build())
                 .checkInDate(LocalDate.of(2024,11,05))
                 .checkOutDate(LocalDate.of(2024,11,07))
                 .peopleNum(2)
@@ -57,7 +58,7 @@ public class BookServiceTest {
         assertEquals(defaultBook.getBookingId(),actual.getBookingId());
         assertEquals(defaultBook.getCheckInDate(), actual.getCheckInDate());
         assertEquals(defaultBook.getCheckOutDate(), actual.getCheckOutDate());
-        assertEquals(defaultBook.getHotelId(), actual.getHotelId());
+        assertEquals(defaultBook.getHotel().getId(), actual.getHotel().getId());
         assertEquals(defaultBook.getCustomerId(), actual.getCustomerId());
         assertEquals(defaultBook.getPeopleNum(), actual.getPeopleNum());
         assertEquals(defaultBook.getRoomId(), actual.getRoomId());
@@ -80,7 +81,7 @@ public class BookServiceTest {
         assertEquals(bookWithId.getPeopleNum(), actual.get().getPeopleNum());
         assertEquals(bookWithId.getCheckOutDate(),actual.get().getCheckOutDate());
         assertEquals(bookWithId.getCheckInDate(), actual.get().getCheckInDate());
-        assertEquals(bookWithId.getHotelId(), actual.get().getHotelId());
+        assertEquals(bookWithId.getHotel().getId(), actual.get().getHotel().getId());
     }
 
     @Test

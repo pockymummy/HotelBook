@@ -1,28 +1,19 @@
-package com.thanawat.hotelx.HotelBook.data;
+package com.thanawat.hotelx.HotelBook.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
-@Entity
-@Table(name = "books")
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Book {
-    @Id @GeneratedValue
+@Builder
+public class BookDTO {
     private Long bookingId;
     private Long customerId;
-    @OneToOne
-    @JoinColumn(name="hotel_id", referencedColumnName = "id")
-    private Hotel hotel;
     private Long roomId;
+    private Long hotelId;
     private int peopleNum;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkInDate;

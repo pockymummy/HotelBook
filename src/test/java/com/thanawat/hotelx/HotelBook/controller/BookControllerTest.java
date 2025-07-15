@@ -3,6 +3,7 @@ package com.thanawat.hotelx.HotelBook.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thanawat.hotelx.HotelBook.data.Book;
+import com.thanawat.hotelx.HotelBook.data.Hotel;
 import com.thanawat.hotelx.HotelBook.exception.PrimaryKeyExistInCreateRequest;
 import com.thanawat.hotelx.HotelBook.service.BookService;
 import util.DateConfiguredObjectMapper;
@@ -42,7 +43,7 @@ public class BookControllerTest {
     @BeforeEach
     void setup() {
         defaultReservation = Book.builder()
-                .hotelId(1L)
+                .hotel(Hotel.builder().id(1L).build())
                 .checkInDate(LocalDate.of(2024,10,05))
                 .checkOutDate(LocalDate.of(2024,10,07))
                 .customerId(1L)
@@ -51,7 +52,7 @@ public class BookControllerTest {
                 .build();
 
         savedReservation =                        Book.builder()
-                .hotelId(1L)
+                .hotel(Hotel.builder().id(1L).build())
                 .checkInDate(LocalDate.of(2024,10,05))
                 .checkOutDate(LocalDate.of(2024,10,07))
                 .customerId(1L)
@@ -99,7 +100,7 @@ public class BookControllerTest {
                 .andExpect(result -> {
                     Book actual = objectMapper.readValue(result.getResponse().getContentAsString(), Book.class);
                     assertEquals(savedReservation.getBookingId(), actual.getBookingId());
-                    assertEquals(savedReservation.getHotelId(), actual.getHotelId());
+                    assertEquals(savedReservation.getHotel().getId(), actual.getHotel().getId());
                 });
     }
 
